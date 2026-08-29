@@ -1,10 +1,11 @@
-// VK Callback API echo-bot on Cloudflare Workers
+// VK Callback API bot on Cloudflare Workers
 // Secrets required (set via `wrangler secret put`):
 //   VK_CONFIRMATION_CODE - string VK expects back for server confirmation
 //   VK_SECRET_KEY         - "Secret key" from VK group Callback API settings
 //   VK_ACCESS_TOKEN       - group access token used to call messages.send
 
-const VK_API_VERSION = "5.199";
+import { sendMainMenu, routeAction } from "./handlers/router.js";
+import { answerMessageEvent } from "./handlers/vkApi.js";
 
 export default {
   async fetch(request, env) {
@@ -34,7 +35,27 @@ export default {
     if (body.type === "message_new") {
       const message = body.object?.message;
       if (message && env.VK_ACCESS_TOKEN) {
-        await sendMessage(env, message.peer_id, message.text || "");
+        await sendMainMenu(env, message.peer_id);
+      }
+    }
+
+    // Inline keyboard button tap
+    if (body.type === "message_event") {
+      const event = body.object;
+      if (event && env.VK_ACCESS_TOKEN) {
+        await answerMessageEvent(env, {
+          eventId: event.event_id,
+          userId: event.user_id,
+          peerId: event.peer_id,
+        });
+
+        let payload = {};
+        try {
+          payload = JSON.parse(event.payload || "{}");
+        } catch {
+          payload = {};
+        }
+        await routeAction(env, payload.action, event.peer_id);
       }
     }
 
@@ -42,17 +63,3 @@ export default {
     return new Response("ok", { status: 200 });
   },
 };
-
-async function sendMessage(env, peerId, text) {
-  const params = new URLSearchParams({
-    access_token: env.VK_ACCESS_TOKEN,
-    v: VK_API_VERSION,
-    peer_id: String(peerId),
-    message: text,
-    random_id: String(Math.floor(Math.random() * 2 ** 31)),
-  });
-
-  await fetch(`https://api.vk.com/method/messages.send?${params.toString()}`, {
-    method: "POST",
-  });
-}
