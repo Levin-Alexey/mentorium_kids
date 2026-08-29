@@ -25,6 +25,9 @@ export default {
     }
 
     if (body.type === "confirmation") {
+      if (!env.VK_CONFIRMATION_CODE) {
+        return new Response("VK_CONFIRMATION_CODE secret is not set", { status: 500 });
+      }
       return new Response(env.VK_CONFIRMATION_CODE, { status: 200 });
     }
 
