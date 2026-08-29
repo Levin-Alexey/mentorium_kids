@@ -2,3 +2,12 @@ name = "mentorium-kids"
 main = "index.js"
 compatibility_date = "2026-02-10"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "mentoriumkids"
+database_id = "14e892b9-5704-46d7-859e-a5c1078b8401"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "e5c0b0a56d834e7a98a7c6f70018f3cc"
+

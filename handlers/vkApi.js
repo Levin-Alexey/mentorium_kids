@@ -9,9 +9,16 @@ async function callVkApi(env, method, params) {
     ...params,
   });
 
-  return fetch(`https://api.vk.com/method/${method}?${search.toString()}`, {
+  const response = await fetch(`https://api.vk.com/method/${method}?${search.toString()}`, {
     method: "POST",
   });
+
+  // VK always answers with HTTP 200, so real API errors only show up in the JSON body
+  const data = await response.json();
+  if (data.error) {
+    console.error(`VK API ${method} error:`, JSON.stringify(data.error));
+  }
+  return data;
 }
 
 // text - message text; attachment - VK attachment string (e.g. "photo123_456"); keyboard - keyboard object (will be JSON-stringified)

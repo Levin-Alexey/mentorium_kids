@@ -8,7 +8,7 @@ export const MAIN_MENU_KEYBOARD = {
       {
         action: {
           type: "callback",
-          label: "🎮 ПРОБНЫЙ УРОК",
+          label: "🎮 БЕСПЛАТНЫЙ ПРОБНЫЙ УРОК",
           payload: JSON.stringify({ action: "trial_lesson" }),
         },
       },
