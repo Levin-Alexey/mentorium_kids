@@ -7,6 +7,43 @@
 import { sendMainMenu, routeAction } from "./handlers/router.js";
 import { answerMessageEvent } from "./handlers/vkApi.js";
 
+function getIsoTimestamp(date = new Date()) {
+  return date.toISOString();
+}
+
+async function ensureUser(env, vkId) {
+  if (!vkId || !env.DB) {
+    return null;
+  }
+
+  const now = getIsoTimestamp();
+  const existingUser = await env.DB.prepare(
+    "SELECT id FROM users WHERE vk_id = ?"
+  ).bind(vkId).first();
+
+  if (existingUser) {
+    await env.DB.prepare(
+      "UPDATE users SET last_started_at = ?, last_activity_at = ?, updated_at = ? WHERE vk_id = ?"
+    ).bind(now, now, now, vkId).run();
+
+    return existingUser.id;
+  }
+
+  const result = await env.DB.prepare(
+    `INSERT INTO users (
+      vk_id,
+      source,
+      first_started_at,
+      last_started_at,
+      last_activity_at,
+      created_at,
+      updated_at
+    ) VALUES (?, 'vk_bot', ?, ?, ?, ?, ?)`
+  ).bind(vkId, now, now, now, now, now).run();
+
+  return result?.meta?.last_row_id ?? null;
+}
+
 export default {
   async fetch(request, env) {
     if (request.method !== "POST") {
@@ -34,6 +71,12 @@ export default {
 
     if (body.type === "message_new") {
       const message = body.object?.message;
+      const vkUserId = message?.from_id ?? message?.peer_id;
+
+      if (vkUserId) {
+        await ensureUser(env, vkUserId);
+      }
+
       if (message && env.VK_ACCESS_TOKEN) {
         await sendMainMenu(env, message.peer_id);
       }
