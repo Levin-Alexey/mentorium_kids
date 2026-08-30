@@ -87,16 +87,6 @@ async function createLeadForUser(env, userId) {
   return Number(result?.meta?.last_row_id ?? 0) || null;
 }
 
-function createAgeKeyboard() {
-  return buildQuestionKeyboard([
-    [
-      { action: { type: "callback", label: "10–12", payload: JSON.stringify({ action: "trial_age", value: "10_12" }) } },
-      { action: { type: "callback", label: "13–14", payload: JSON.stringify({ action: "trial_age", value: "13_14" }) } },
-      { action: { type: "callback", label: "15–17", payload: JSON.stringify({ action: "trial_age", value: "15_17" }) } },
-    ],
-  ]);
-}
-
 function createCourseKeyboard() {
   return buildQuestionKeyboard([
     [
@@ -206,8 +196,7 @@ async function askNextQuestion(env, peerId, state, userId) {
       return sendMessage(env, peerId, { text: "Как зовут ученика?" });
     case "age":
       return sendMessage(env, peerId, {
-        text: "Выберите возраст ребёнка",
-        keyboard: createAgeKeyboard(),
+        text: "Напишите возраст ребёнка: 10–12, 13–14 или 15–17",
       });
     case "course":
       return sendMessage(env, peerId, {
@@ -416,16 +405,6 @@ export async function handleTrialLesson(env, peerId, payload = {}) {
     return startTrialFlow(env, peerId, vkId, { reset: true });
   }
 
-  if (action === "trial_age") {
-    return completeTrialStep(env, peerId, vkId, {
-      step: "course",
-      field: "child_age_group",
-      value: payload.value,
-      eventType: "age_selected",
-      eventValue: payload.value,
-    });
-  }
-
   if (action === "trial_course") {
     return completeTrialStep(env, peerId, vkId, {
       step: "notes",
@@ -496,6 +475,22 @@ export async function handleTrialTextInput(env, peerId, text, vkId) {
         field: "child_name",
         messageText: normalizedText,
         eventType: "child_name_entered",
+      });
+    }
+    case "age": {
+      const ageValue = normalizedText;
+      if (!["10_12", "13_14", "15_17"].includes(ageValue)) {
+        await sendMessage(env, peerId, { text: "Напишите возраст ребёнка в одном из вариантов: 10–12, 13–14 или 15–17" });
+        return true;
+      }
+
+      await updateLeadField(env, state.lead_id, "child_age_group", ageValue);
+      await logLeadEvent(env, { userId, leadId: state.lead_id, eventType: "age_selected", eventValue: ageValue });
+      return completeTrialStep(env, peerId, vkId, {
+        step: "course",
+        field: "child_age_group",
+        messageText: ageValue,
+        eventType: "age_selected",
       });
     }
     case "notes": {
