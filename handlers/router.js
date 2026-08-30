@@ -16,10 +16,18 @@ const ACTION_HANDLERS = {
 };
 
 export async function routeAction(env, action, peerId, payload = {}) {
-  const actionName = typeof action === "string" ? action : action?.action;
-  const handler = ACTION_HANDLERS[actionName];
-  if (!handler) return;
-  return handler(env, peerId, payload);
+  const normalizedAction = typeof action === "string" ? action : action?.action || payload?.action;
+  const handler = ACTION_HANDLERS[normalizedAction];
+
+  if (!handler) {
+    console.log("Unknown action", { action, payload, peerId });
+    return null;
+  }
+
+  return handler(env, peerId, {
+    ...payload,
+    action: normalizedAction,
+  });
 }
 
 export { sendMainMenu };

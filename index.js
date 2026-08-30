@@ -100,13 +100,24 @@ export default {
 
         let payload = {};
         try {
-          payload = JSON.parse(event.payload || "{}");
-        } catch {
+          const rawPayload = typeof event.payload === "string" ? event.payload : JSON.stringify(event.payload || {});
+          payload = JSON.parse(rawPayload || "{}");
+        } catch (error) {
+          console.error("Failed to parse VK callback payload", error, event.payload);
           payload = {};
         }
+
+        console.log("VK message_event payload", {
+          eventId: event.event_id,
+          userId: event.user_id,
+          peerId: event.peer_id,
+          payload,
+        });
+
         await routeAction(env, payload.action, event.peer_id, {
           ...payload,
           userId: event.user_id,
+          peerId: event.peer_id,
         });
       }
     }
