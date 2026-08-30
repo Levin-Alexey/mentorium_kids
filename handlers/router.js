@@ -15,10 +15,11 @@ const ACTION_HANDLERS = {
   question: handleQuestion,
 };
 
-export async function routeAction(env, action, peerId) {
-  const handler = ACTION_HANDLERS[action];
+export async function routeAction(env, action, peerId, payload = {}) {
+  const actionName = typeof action === "string" ? action : action?.action;
+  const handler = ACTION_HANDLERS[actionName];
   if (!handler) return;
-  return handler(env, peerId);
+  return handler(env, peerId, payload);
 }
 
 export { sendMainMenu };

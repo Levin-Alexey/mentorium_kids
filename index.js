@@ -6,6 +6,7 @@
 
 import { sendMainMenu, routeAction } from "./handlers/router.js";
 import { answerMessageEvent } from "./handlers/vkApi.js";
+import { handleTrialLesson, handleTrialTextInput } from "./handlers/trialLesson.js";
 
 function getIsoTimestamp(date = new Date()) {
   return date.toISOString();
@@ -75,6 +76,11 @@ export default {
 
       if (vkUserId) {
         await ensureUser(env, vkUserId);
+
+        const hasActiveTrialFlow = await handleTrialTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveTrialFlow) {
+          return new Response("ok", { status: 200 });
+        }
       }
 
       if (message && env.VK_ACCESS_TOKEN) {
@@ -98,7 +104,10 @@ export default {
         } catch {
           payload = {};
         }
-        await routeAction(env, payload.action, event.peer_id);
+        await routeAction(env, payload.action, event.peer_id, {
+          ...payload,
+          userId: event.user_id,
+        });
       }
     }
 
