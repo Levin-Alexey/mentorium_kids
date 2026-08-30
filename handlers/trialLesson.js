@@ -2,6 +2,16 @@ import { sendMessage } from "./vkApi.js";
 
 const FLOW_NAME = "trial_registration";
 
+function getFirstDefinedValue(env, ...keys) {
+  for (const key of keys) {
+    const value = env?.[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return "";
+}
+
 function getIsoTimestamp(date = new Date()) {
   return date.toISOString();
 }
@@ -89,27 +99,50 @@ async function createLeadForUser(env, userId) {
 
 function createCourseKeyboard() {
   return buildQuestionKeyboard([
-    [
-      { action: { type: "callback", label: "🟢 ИИ Старт", payload: JSON.stringify({ action: "trial_course", value: "ai_start" }) } },
-      { action: { type: "callback", label: "💻 Вайбкодинг", payload: JSON.stringify({ action: "trial_course", value: "vibecoding" }) } },
-    ],
-    [
-      { action: { type: "callback", label: "🎨 ИИ для творчества", payload: JSON.stringify({ action: "trial_course", value: "ai_creative" }) } },
-      { action: { type: "callback", label: "⚡ ИИ PRO", payload: JSON.stringify({ action: "trial_course", value: "ai_pro" }) } },
-    ],
-    [
-      { action: { type: "callback", label: "🤷 Нужна помощь в выборе", payload: JSON.stringify({ action: "trial_course", value: "need_help" }) } },
-    ],
+    [{ action: { type: "callback", label: "🟢 ИИ Старт", payload: JSON.stringify({ action: "trial_course", value: "ai_start" }) } }],
+    [{ action: { type: "callback", label: "💻 Вайбкодинг", payload: JSON.stringify({ action: "trial_course", value: "vibecoding" }) } }],
+    [{ action: { type: "callback", label: "🎨 ИИ для творчества", payload: JSON.stringify({ action: "trial_course", value: "ai_creative" }) } }],
+    [{ action: { type: "callback", label: "⚡ ИИ PRO", payload: JSON.stringify({ action: "trial_course", value: "ai_pro" }) } }],
+    [{ action: { type: "callback", label: "🤷 Нужна помощь в выборе", payload: JSON.stringify({ action: "trial_course", value: "need_help" }) } }],
   ]);
 }
 
 function createReviewKeyboard() {
   return buildQuestionKeyboard([
-    [
-      { action: { type: "callback", label: "✅ Всё верно", payload: JSON.stringify({ action: "trial_review_confirm" }) } },
-      { action: { type: "callback", label: "✏️ Изменить", payload: JSON.stringify({ action: "trial_review_edit" }) } },
-    ],
+    [{ action: { type: "callback", label: "✅ Всё верно", payload: JSON.stringify({ action: "trial_review_confirm" }) } }],
+    [{ action: { type: "callback", label: "✏️ Изменить", payload: JSON.stringify({ action: "trial_review_edit" }) } }],
   ]);
+}
+
+function normalizeAgeValue(rawValue) {
+  const value = String(rawValue || "").trim().toLowerCase();
+  if (!value) {
+    return null;
+  }
+
+  const rangeMatch = value.match(/(\d{1,2})\s*[-–—]\s*(\d{1,2})/);
+  if (rangeMatch) {
+    const from = Number(rangeMatch[1]);
+    const to = Number(rangeMatch[2]);
+    if (from >= 6 && to <= 18 && from < to) {
+      return `${from}_${to}`;
+    }
+  }
+
+  const directMatch = value.match(/(\d{1,2})/);
+  if (directMatch) {
+    const age = Number(directMatch[1]);
+    if (age >= 6 && age <= 18) {
+      return String(age);
+    }
+  }
+
+  const explicitGroupMatch = value.match(/^(10_12|13_14|15_17)$/);
+  if (explicitGroupMatch) {
+    return explicitGroupMatch[1];
+  }
+
+  return null;
 }
 
 function formatLeadReview(lead) {
@@ -196,7 +229,7 @@ async function askNextQuestion(env, peerId, state, userId) {
       return sendMessage(env, peerId, { text: "Как зовут ученика?" });
     case "age":
       return sendMessage(env, peerId, {
-        text: "Напишите возраст ребёнка: 10–12, 13–14 или 15–17",
+        text: "Напишите возраст ребёнка.",
       });
     case "course":
       return sendMessage(env, peerId, {
@@ -303,20 +336,36 @@ async function finalizeLead(env, peerId, vkId) {
   };
 
   const tasks = [];
-  if (env.N8N_LEAD_WEBHOOK_URL || env.N8N_WEBHOOK_SECRET) {
-    tasks.push(sendLeadToN8n(env, payload));
-  }
-  tasks.push(sendLeadToVkChat(env, payload));
+  const n8nUrl = getFirstDefinedValue(env, "N8N_LEAD_WEBHOOK_URL", "N8N_WEBHOOK_URL");
+  const n8nSecret = getFirstDefinedValue(env, "N8N_WEBHOOK_SECRET", "N8N_LEAD_WEBHOOK_SECRET");
+  const vkChatId = getFirstDefinedValue(env, "VK_ADMIN_CHAT_ID", "VK_GROUP_CHAT_ID", "VK_CHAT_ID");
 
-  await Promise.allSettled(tasks);
+  if (n8nUrl) {
+    tasks.push(sendLeadToN8n(env, payload, n8nUrl, n8nSecret));
+  }
+
+  const vkToken = getFirstDefinedValue(env, "VK_GROUP_TOKEN", "VK_ACCESS_TOKEN");
+  if (vkToken) {
+    tasks.push(sendLeadToVkChat(env, payload, vkToken, vkChatId || "175946972"));
+  }
+
+  if (!tasks.length) {
+    console.warn("Trial lead submitted but no external integrations configured", { n8nUrl, vkToken: !!vkToken, vkChatId });
+  }
+
+  const results = await Promise.allSettled(tasks);
+  for (const result of results) {
+    if (result.status === "rejected") {
+      console.error("External lead delivery failed", result.reason);
+    }
+  }
 
   return sendMessage(env, peerId, {
     text: "Заявка принята 🎉\n\nМы свяжемся с вами и подтвердим точное\nвремя пробного занятия.\n\nДо встречи на уроке! 🚀",
   });
 }
 
-async function sendLeadToVkChat(env, lead) {
-  const accessToken = env.VK_GROUP_TOKEN || env.VK_ACCESS_TOKEN;
+async function sendLeadToVkChat(env, lead, accessToken = getFirstDefinedValue(env, "VK_GROUP_TOKEN", "VK_ACCESS_TOKEN"), peerId = getFirstDefinedValue(env, "VK_ADMIN_CHAT_ID", "VK_GROUP_CHAT_ID", "VK_CHAT_ID") || "175946972") {
   if (!accessToken) {
     return false;
   }
@@ -345,7 +394,7 @@ async function sendLeadToVkChat(env, lead) {
 
   const params = new URLSearchParams({
     access_token: accessToken,
-    peer_id: String(env.VK_ADMIN_CHAT_ID || "2000000132"),
+    peer_id: String(peerId),
     message,
     random_id: String(crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff),
     v: "5.199",
@@ -364,16 +413,16 @@ async function sendLeadToVkChat(env, lead) {
   return data;
 }
 
-async function sendLeadToN8n(env, lead) {
-  if (!env.N8N_LEAD_WEBHOOK_URL) {
+async function sendLeadToN8n(env, lead, url = getFirstDefinedValue(env, "N8N_LEAD_WEBHOOK_URL", "N8N_WEBHOOK_URL"), secret = getFirstDefinedValue(env, "N8N_WEBHOOK_SECRET", "N8N_LEAD_WEBHOOK_SECRET")) {
+  if (!url) {
     return false;
   }
 
-  const response = await fetch(env.N8N_LEAD_WEBHOOK_URL, {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      ...(env.N8N_WEBHOOK_SECRET ? { "X-Webhook-Secret": env.N8N_WEBHOOK_SECRET } : {}),
+      ...(secret ? { "X-Webhook-Secret": secret } : {}),
     },
     body: JSON.stringify({
       lead_id: lead.id,
@@ -478,9 +527,9 @@ export async function handleTrialTextInput(env, peerId, text, vkId) {
       });
     }
     case "age": {
-      const ageValue = normalizedText;
-      if (!["10_12", "13_14", "15_17"].includes(ageValue)) {
-        await sendMessage(env, peerId, { text: "Напишите возраст ребёнка в одном из вариантов: 10–12, 13–14 или 15–17" });
+      const ageValue = normalizeAgeValue(normalizedText);
+      if (!ageValue) {
+        await sendMessage(env, peerId, { text: "Напишите возраст ребёнка, например: 12 или 10-12" });
         return true;
       }
 

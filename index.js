@@ -7,6 +7,7 @@
 import { sendMainMenu, routeAction } from "./handlers/router.js";
 import { answerMessageEvent } from "./handlers/vkApi.js";
 import { handleTrialLesson, handleTrialTextInput } from "./handlers/trialLesson.js";
+import { handleQuestionTextInput } from "./handlers/question.js";
 
 function getIsoTimestamp(date = new Date()) {
   return date.toISOString();
@@ -79,6 +80,11 @@ export default {
 
         const hasActiveTrialFlow = await handleTrialTextInput(env, message.peer_id, message.text, vkUserId);
         if (hasActiveTrialFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveQuestionFlow = await handleQuestionTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveQuestionFlow) {
           return new Response("ok", { status: 200 });
         }
       }

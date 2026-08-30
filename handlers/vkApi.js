@@ -45,3 +45,44 @@ export async function answerMessageEvent(env, { eventId, userId, peerId, eventDa
 
   return callVkApi(env, "messages.sendMessageEventAnswer", params);
 }
+
+export function getFirstDefinedValue(env, ...keys) {
+  for (const key of keys) {
+    const value = env?.[key];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+  return "";
+}
+
+// Sends a plain text notification to the community's admin chat (confirmed working peer_id: 175946972)
+export async function sendAdminChatMessage(env, text) {
+  const accessToken = getFirstDefinedValue(env, "VK_GROUP_TOKEN", "VK_ACCESS_TOKEN");
+  if (!accessToken) {
+    return false;
+  }
+
+  const peerId = getFirstDefinedValue(env, "VK_ADMIN_CHAT_ID", "VK_GROUP_CHAT_ID", "VK_CHAT_ID") || "175946972";
+
+  const params = new URLSearchParams({
+    access_token: accessToken,
+    peer_id: String(peerId),
+    message: text,
+    random_id: String(crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff),
+    v: VK_API_VERSION,
+  });
+
+  const response = await fetch("https://api.vk.com/method/messages.send", {
+    method: "POST",
+    body: params,
+  });
+
+  const data = await response.json();
+  if (data.error) {
+    console.error("VK admin chat message error:", JSON.stringify(data.error));
+    return false;
+  }
+
+  return data;
+}
