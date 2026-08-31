@@ -410,10 +410,103 @@ export async function handleCourseAi(env, peerId) {
   });
 }
 
+function createProgrammingLevelsKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🎮 Базовый курс",
+            payload: JSON.stringify({ action: "programming_basic" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "💻 Начинающий разработчик",
+            payload: JSON.stringify({ action: "programming_beginner" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⚙️ Разработчик",
+            payload: JSON.stringify({ action: "programming_developer" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏗️ Инженер-разработчик",
+            payload: JSON.stringify({ action: "programming_engineer" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "courses" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
 export async function handleCourseProgramming(env, peerId) {
-  // TODO: Replace with actual Programming course content
   return sendMessage(env, peerId, {
-    text: "💻 Программирование\n\n(Подробная программа курса будет добавлена позже)",
+    text: "Хотите, чтобы ребёнок не просто \"поучился программированию\", а реально что‑то создал? В этом разделе мы собрали 4 уровня, на каждом из которых ребёнок делает свои проекты - от первых игр до полноценных AI‑продуктов.\n\nГлавное правило нашего подхода: теория только ради практики. Ребёнок не тратит время на абстрактные примеры, а сразу собирает то, что можно запустить, показать друзьям и сохранить в портфолио.\n\nЧто ждёт ребёнка на каждом уровне:\n\n• Базовый курс. Первые 2D‑игры на визуальных блоках и мягкий переход к текстовому коду. Ребёнок видит результат уже на первых неделях.\n• Начинающий разработчик. Полноценные проекты на текстовом языке: от простых утилит до мини‑игр. Ребёнок учится писать чистый код и использовать готовые решения.\n• Разработчик. Веб‑приложения и AI‑сервисы: работа с API, LLM и агентными системами. Ребёнок собирает продукты, которые решают реальные задачи.\n• Инженер‑разработчик. Надёжные системы и MVP: проектирование, контроль качества, наблюдаемость и презентация. Ребёнок учится работать как в настоящей команде.\n\nВ итоге у ребёнка будет не просто список тем, а портфолио из реальных проектов, которые показывают его навыки и прогресс.",
+    keyboard: createProgrammingLevelsKeyboard(),
+  });
+}
+
+export async function handleProgrammingBasic(env, peerId) {
+  // TODO: Replace with actual Programming Basic level content
+  return sendMessage(env, peerId, {
+    text: "🎮 Базовый курс\n\n(Подробная программа уровня будет добавлена позже)",
+    keyboard: createBackKeyboard(),
+  });
+}
+
+export async function handleProgrammingBeginner(env, peerId) {
+  // TODO: Replace with actual Programming Beginner level content
+  return sendMessage(env, peerId, {
+    text: "💻 Начинающий разработчик\n\n(Подробная программа уровня будет добавлена позже)",
+    keyboard: createBackKeyboard(),
+  });
+}
+
+export async function handleProgrammingDeveloper(env, peerId) {
+  // TODO: Replace with actual Programming Developer level content
+  return sendMessage(env, peerId, {
+    text: "⚙️ Разработчик\n\n(Подробная программа уровня будет добавлена позже)",
+    keyboard: createBackKeyboard(),
+  });
+}
+
+export async function handleProgrammingEngineer(env, peerId) {
+  // TODO: Replace with actual Programming Engineer level content
+  return sendMessage(env, peerId, {
+    text: "🏗️ Инженер-разработчик\n\n(Подробная программа уровня будет добавлена позже)",
     keyboard: createBackKeyboard(),
   });
 }
