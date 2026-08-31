@@ -99,10 +99,8 @@ async function createLeadForUser(env, userId) {
 
 function createCourseKeyboard() {
   return buildQuestionKeyboard([
-    [{ action: { type: "callback", label: "🟢 ИИ Старт", payload: JSON.stringify({ action: "trial_course", value: "ai_start" }) } }],
-    [{ action: { type: "callback", label: "💻 Вайбкодинг", payload: JSON.stringify({ action: "trial_course", value: "vibecoding" }) } }],
-    [{ action: { type: "callback", label: "🎨 ИИ для творчества", payload: JSON.stringify({ action: "trial_course", value: "ai_creative" }) } }],
-    [{ action: { type: "callback", label: "⚡ ИИ PRO", payload: JSON.stringify({ action: "trial_course", value: "ai_pro" }) } }],
+    [{ action: { type: "callback", label: "⚡ Искусственный Интеллект", payload: JSON.stringify({ action: "trial_course", value: "ai" }) } }],
+    [{ action: { type: "callback", label: "💻 Программирование", payload: JSON.stringify({ action: "trial_course", value: "programming" }) } }],
     [{ action: { type: "callback", label: "🤷 Нужна помощь в выборе", payload: JSON.stringify({ action: "trial_course", value: "need_help" }) } }],
   ]);
 }
@@ -208,7 +206,7 @@ async function startTrialFlow(env, peerId, vkId, { reset = false } = {}) {
   });
 
   return sendMessage(env, peerId, {
-    text: "Напишите Ваше имя",
+    text: "Спасибо, что хотите познакомить ребёнка с миром программирования и ИИ! Чтобы записать его на бесплатный пробный урок, нам нужно уточнить пару деталей. Начнём с самого простого: напишите, пожалуйста, Ваше имя в ответном сообщении в чате и дальше шаг за шагом всё оформим!",
   });
 }
 
@@ -224,36 +222,36 @@ async function askNextQuestion(env, peerId, state, userId) {
 
   switch (state.step) {
     case "parent_name":
-      return sendMessage(env, peerId, { text: "Напишите Ваше имя" });
+      return sendMessage(env, peerId, { text: "Спасибо, что хотите познакомить ребёнка с миром программирования и ИИ! Чтобы записать его на бесплатный пробный урок, нам нужно уточнить пару деталей. Начнём с самого простого: напишите, пожалуйста, Ваше имя в ответном сообщении в чате и дальше шаг за шагом всё оформим!" });
     case "child_name":
-      return sendMessage(env, peerId, { text: "Как зовут ученика?" });
+      return sendMessage(env, peerId, { text: "А теперь самое важное - имя будущего программиста! 🎉 Напишите, пожалуйста, как зовут ребёнка в ответном сообщении в чате. Мы уже мысленно готовим для него место в группе и первый проект!" });
     case "age":
       return sendMessage(env, peerId, {
-        text: "Напишите возраст ребёнка.",
+        text: "Спасибо! Теперь подскажите, сколько лет ребёнку. Это важно, чтобы подобрать подходящий уровень сложности - чтобы на уроке ему было интересно, но не слишком сложно.",
       });
     case "course":
       return sendMessage(env, peerId, {
-        text: "Какой курс интересует?",
+        text: "Теперь давайте определимся с направлением. У нас их два: Искусственный Интеллект и программирование. Оба ведут к одному результату, просто с разного старта. Подскажите, что вам сейчас ближе?",
         keyboard: createCourseKeyboard(),
       });
     case "notes":
       return sendMessage(env, peerId, {
-        text: "Расскажите буквально в 1-2 предложениях о ребёнке: чем интересуется, был ли опыт программирования или работы с ИИ, что хотелось бы научиться делать?\n\nЕсли сложно — нажмите кнопку ниже.",
+        text: "Поделитесь, пожалуйста, парой слов про ребёнка (1-2 предложения): что ему интересно, пробовал ли он программировать или работать с ИИ, к чему тянется. Это поможет нам сразу подстроиться под него.\nА если сейчас не хочется ничего описывать - нажмите кнопку ниже.",
         keyboard: buildQuestionKeyboard([
           [{ action: { type: "callback", label: "⏩ Пока сложно ответить", payload: JSON.stringify({ action: "trial_notes_skip" }) } }],
         ]),
       });
     case "preferred_time_custom":
       return sendMessage(env, peerId, {
-        text: "Напишите удобное время и дату пробного урока.",
+        text: "Осталось совсем немного - выбрать время. Напишите, когда Вам и ребёнку было бы удобно прийти на пробный урок (можно пару вариантов). Мы всё проверим по расписанию и подтвердим подходящий слот.",
       });
     case "phone":
       return sendMessage(env, peerId, {
-        text: "Оставьте номер телефона для связи и отправки ссылки на занятие.",
+        text: "Для быстрой связи и подтверждения записи нужен номер телефона. Напишите его, пожалуйста. Или, если удобнее, укажите ник в Telegram/WhatsApp - как вам комфортнее.",
       });
     case "email":
       return sendMessage(env, peerId, {
-        text: "Укажите электронную почту.",
+        text: "Чтобы прислать все детали пробного урока и полезные материалы, укажите, пожалуйста, Вашу электронную почту. Обещаем: никаких лишних писем - только то, что нужно для занятия.",
       });
     case "review":
       return sendMessage(env, peerId, {
@@ -361,7 +359,7 @@ async function finalizeLead(env, peerId, vkId) {
   }
 
   return sendMessage(env, peerId, {
-    text: "Заявка принята 🎉\n\nМы свяжемся с вами и подтвердим точное\nвремя пробного занятия.\n\nДо встречи на уроке! 🚀",
+    text: "Спасибо, что доверили нам знакомство ребёнка с миром ИИ и программирования.\n\nСовсем скоро наш куратор свяжется с вами, чтобы подтвердить время пробного урока и ответить на любые вопросы.\n\nДо встречи на занятии - уверены, ребёнку понравится! 🚀",
   });
 }
 

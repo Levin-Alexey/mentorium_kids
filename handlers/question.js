@@ -46,7 +46,7 @@ export async function handleQuestion(env, peerId, payload = {}) {
   await setQuestionState(env, vkId, { flow: "question", step: "awaiting_question" });
 
   return sendMessage(env, peerId, {
-    text: "💬 Задать вопрос\n\nНапишите ваш вопрос в ответном сообщении, и наш менеджер ответит вам в ближайшее время.",
+    text: "💬 Задать вопрос\n\nНапишите Ваш вопрос в ответном сообщении в чате, и мы ответим Вам в ближайшее время.",
   });
 }
 
