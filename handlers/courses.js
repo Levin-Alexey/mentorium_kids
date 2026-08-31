@@ -22,15 +22,15 @@ function createCoursesKeyboard() {
           },
         },
       ],
-      [
-        {
-          action: {
-            type: "callback",
-            label: "⌨️ Компьютерная грамотность",
-            payload: JSON.stringify({ action: "course_literacy" }),
-          },
-        },
-      ],
+      // [
+      //   {
+      //     action: {
+      //       type: "callback",
+      //       label: "⌨️ Компьютерная грамотность",
+      //       payload: JSON.stringify({ action: "course_literacy" }),
+      //     },
+      //   },
+      // ],
       [
         {
           action: {
