@@ -265,7 +265,7 @@ export async function handleAiResearcherMoreInfo(env, peerId, payload = {}) {
   await setAiResearcherState(env, vkId, { flow: "ai_researcher_info", step: "awaiting_info" });
 
   return sendMessage(env, peerId, {
-    text: "Напишите ваш вопрос по курсу \"Исследователь ИИ\" в ответном сообщении, и мы свяжемся с вами в ближайшее время.",
+    text: "Напишите Ваш вопрос по курсу \"Исследователь ИИ\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
   });
 }
 
@@ -292,7 +292,7 @@ export async function handleAiResearcherMoreInfoTextInput(env, peerId, text, vkI
   );
 
   await sendMessage(env, peerId, {
-    text: "Спасибо! Ваш вопрос передан менеджеру, он ответит вам в ближайшее время.",
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
     keyboard: createAiResearcherKeyboard(),
   });
 
