@@ -9,7 +9,7 @@ import { answerMessageEvent } from "./handlers/vkApi.js";
 import { handleTrialLesson, handleTrialTextInput } from "./handlers/trialLesson.js";
 import { handleQuestionTextInput } from "./handlers/question.js";
 import { handlePickCourseTextInput } from "./handlers/pickCourse.js";
-import { handleAiResearcherMoreInfoTextInput, handleAiCreatorMoreInfoTextInput, handleAiDeveloperMoreInfoTextInput, handleAiEngineerMoreInfoTextInput } from "./handlers/courses.js";
+import { handleAiResearcherMoreInfoTextInput, handleAiCreatorMoreInfoTextInput, handleAiDeveloperMoreInfoTextInput, handleAiEngineerMoreInfoTextInput, handleProgrammingBasicMoreInfoTextInput, handleProgrammingBeginnerMoreInfoTextInput, handleProgrammingDeveloperMoreInfoTextInput, handleProgrammingEngineerMoreInfoTextInput } from "./handlers/courses.js";
 
 function getIsoTimestamp(date = new Date()) {
   return date.toISOString();
@@ -112,6 +112,26 @@ export default {
 
         const hasActiveAiEngineerMoreInfoFlow = await handleAiEngineerMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
         if (hasActiveAiEngineerMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveProgrammingBasicMoreInfoFlow = await handleProgrammingBasicMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveProgrammingBasicMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveProgrammingBeginnerMoreInfoFlow = await handleProgrammingBeginnerMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveProgrammingBeginnerMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveProgrammingDeveloperMoreInfoFlow = await handleProgrammingDeveloperMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveProgrammingDeveloperMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveProgrammingEngineerMoreInfoFlow = await handleProgrammingEngineerMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveProgrammingEngineerMoreInfoFlow) {
           return new Response("ok", { status: 200 });
         }
       }

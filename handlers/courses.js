@@ -256,6 +256,130 @@ async function clearAiEngineerState(env, vkId) {
   await env.KV.delete(`ai_engineer_info:${vkId}`);
 }
 
+async function setProgrammingBasicState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`programming_basic_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getProgrammingBasicState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`programming_basic_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearProgrammingBasicState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`programming_basic_info:${vkId}`);
+}
+
+async function setProgrammingBeginnerState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`programming_beginner_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getProgrammingBeginnerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`programming_beginner_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearProgrammingBeginnerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`programming_beginner_info:${vkId}`);
+}
+
+async function setProgrammingDeveloperState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`programming_developer_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getProgrammingDeveloperState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`programming_developer_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearProgrammingDeveloperState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`programming_developer_info:${vkId}`);
+}
+
+async function setProgrammingEngineerState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`programming_engineer_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getProgrammingEngineerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`programming_engineer_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearProgrammingEngineerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`programming_engineer_info:${vkId}`);
+}
+
 function createAiResearcherKeyboard() {
   return {
     inline: true,
@@ -479,36 +603,332 @@ export async function handleCourseProgramming(env, peerId) {
   });
 }
 
+function createProgrammingBasicKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "programming_basic_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_programming" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
 export async function handleProgrammingBasic(env, peerId) {
-  // TODO: Replace with actual Programming Basic level content
   return sendMessage(env, peerId, {
-    text: "🎮 Базовый курс\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "На Базовом курсе ребёнок не тратит время на теорию ради теории - он сразу создаёт реальные проекты, которыми хочется делиться. Это лучший способ удержать интерес и дать ребёнку ощущение успеха.\n\nЧто войдёт в практику и портфолио:\n\n• Алгоритмическое мышление через визуальное программирование. На понятных примерах ребёнок научится выстраивать логику: «если это, то сделай то», «повтори 5 раз», «проверь условие». Эти навыки - фундамент любого программирования.\n• Несколько полноценных 2D‑игр в портфолио. Ребёнок соберёт свои первые игры с нуля: от простой механики до оформления и правил победы. Это не мини‑примеры, а законченные продукты, которые можно запустить и поиграть.\n• Естественный переход к текстовому коду. Через рисование и анимацию ребёнок начнёт добавлять в игры новые эффекты с помощью настоящего кода. Переход от блоков к тексту происходит незаметно: ребёнок видит, что код помогает реализовать его идеи быстрее и интереснее.\n\nВ итоге у ребёнка будет не просто список пройденных тем, а несколько своих игр и понимание, что он умеет создавать цифровые продукты.",
+    keyboard: createProgrammingBasicKeyboard(),
   });
+}
+
+function createProgrammingBeginnerKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "programming_beginner_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_programming" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
 }
 
 export async function handleProgrammingBeginner(env, peerId) {
-  // TODO: Replace with actual Programming Beginner level content
   return sendMessage(env, peerId, {
-    text: "💻 Начинающий разработчик\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "На модуле \"Начинающий разработчик\" ребёнок делает не учебные примеры, а реальные проекты, которые можно показать, запустить и сохранить в портфолио. Это уровень, где каждый навык сразу превращается в готовый продукт.\n\nЧто войдёт в практику и портфолио:\n\n• Рабочие программы на Python. Ребёнок соберёт несколько небольших, но полностью самостоятельных программ - это показывает, что он умеет не просто писать код, а решать задачи.\n• Собственные 2D‑игры. Через создание игр он закрепит Python и поймёт, как устроена архитектура игровых программ: как хранить состояние, обрабатывать нажатия, управлять объектами.\n• Интерактивные сайты. Ребёнок сделает несколько сайтов с интерактивностью: формы, кнопки, динамическое обновление контента. Это расширяет его кругозор и показывает, что программирование — это не только скрипты, но и интерфейсы.\n\nВ итоге у ребёнка будет не просто список тем, а набор проектов, которые наглядно демонстрируют его навыки и прогресс.",
+    keyboard: createProgrammingBeginnerKeyboard(),
   });
+}
+
+function createProgrammingDeveloperKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "programming_developer_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_programming" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
+export async function handleProgrammingBasicMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setProgrammingBasicState(env, vkId, { flow: "programming_basic_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Базовый курс\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleProgrammingBasicMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getProgrammingBasicState(env, vkId);
+  if (!state || state.flow !== "programming_basic_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearProgrammingBasicState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `ВОПРОС ПО КУРСУ - 🎮 Базовый курс\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createProgrammingBasicKeyboard(),
+  });
+
+  return true;
+}
+
+export async function handleProgrammingBeginnerMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setProgrammingBeginnerState(env, vkId, { flow: "programming_beginner_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Начинающий разработчик\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleProgrammingBeginnerMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getProgrammingBeginnerState(env, vkId);
+  if (!state || state.flow !== "programming_beginner_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearProgrammingBeginnerState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `ВОПРОС ПО КУРСУ - 💻 Начинающий\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createProgrammingBeginnerKeyboard(),
+  });
+
+  return true;
 }
 
 export async function handleProgrammingDeveloper(env, peerId) {
-  // TODO: Replace with actual Programming Developer level content
   return sendMessage(env, peerId, {
-    text: "⚙️ Разработчик\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "Модуль \"⚙️ Разработчик\" - это мост между обучением и настоящей профессией. Здесь ребёнок получает универсальную базу, которая позволит ему осознанно выбрать специализацию: backend, frontend, геймдев или data science.\n\nКакие возможности откроются:\n\n• Прочная база Python перед выбором пути. Ребёнок освоит язык на уровне, достаточном для старта в любой из современных специализаций. Это даёт гибкость: если позже он захочет углубиться в анализ данных или машинное обучение, фундамент уже будет готов.\n• Опыт работы с backend и базами данных. Создание REST API и работа с данными - это одни из самых востребованных навыков на рынке. Ребёнок поймёт, как устроены серверы и как приложения хранят и обрабатывают информацию.\n• Навыки создания полноценных веб‑приложений. Он научится делать не просто красивые страницы, а интерактивные продукты, которые решают реальные задачи. Это отличный старт для портфолио и собеседований.\n• Профессиональный подход к разработке игр. Работа в игровом движке даст понимание архитектуры и процессов, которые используются в индустрии. Даже если ребёнок не выберет геймдев, эти навыки пригодятся в любой разработке.\n• Подготовка к серьёзной информатике. Алгоритмическое мышление и умение проектировать системы - это то, что нужно для поступления в топовые технические вузы и победы на олимпиадах.\n\nЭтот модуль помогает ребёнку не просто «поучиться программированию», а сделать первый осознанный шаг к будущей профессии.",
+    keyboard: createProgrammingDeveloperKeyboard(),
   });
 }
 
-export async function handleProgrammingEngineer(env, peerId) {
-  // TODO: Replace with actual Programming Engineer level content
+export async function handleProgrammingDeveloperMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setProgrammingDeveloperState(env, vkId, { flow: "programming_developer_info", step: "awaiting_info" });
+
   return sendMessage(env, peerId, {
-    text: "🏗️ Инженер-разработчик\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "Напишите Ваш вопрос по курсу \"Разработчик\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
   });
+}
+
+export async function handleProgrammingDeveloperMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getProgrammingDeveloperState(env, vkId);
+  if (!state || state.flow !== "programming_developer_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearProgrammingDeveloperState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `ВОПРОС ПО КУРСУ - ⚙️ Разработчик\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createProgrammingDeveloperKeyboard(),
+  });
+
+  return true;
+}
+
+function createProgrammingEngineerKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "programming_engineer_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_programming" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
+export async function handleProgrammingEngineer(env, peerId) {
+  return sendMessage(env, peerId, {
+    text: "Модуль \"🏗️ Инженер‑разработчик\" - это подготовка к серьёзным академическим и профессиональным вызовам. Здесь ребёнок получает знания и опыт, которые дают реальное преимущество при поступлении в технические вузы, на олимпиадах и даже на первых стажировках.\n\nКакие возможности откроются:\n\n• Профессиональный Python для разных направлений. Ребёнок освоит язык на уровне, достаточном для работы в backend, AI и data‑разработке. Это универсальная база: если позже он захочет углубиться в анализ данных или машинное обучение, фундамент уже будет готов.\n• Опыт создания production‑like сервисов. Прохождение полного цикла разработки учит ответственности и вниманию к деталям — качествам, которые ценят в любой IT‑компании.\n• Навыки интеграции frontend и backend. Умение связывать интерфейс и серверную часть — один из самых востребованных навыков на рынке. Ребёнок поймёт, как устроены современные приложения и как разные части системы работают вместе.\n• Инженерный подход к разработке игр. Создание законченной игры с продуманной архитектурой тренирует умение проектировать сложные системы. Даже если ребёнок не выберет геймдев, эти навыки пригодятся в любой разработке.\n• Фундамент для Computer Science. Модуль закрывает ключевые темы, которые изучают на первых курсах технических вузов: алгоритмы, структуры данных, архитектура. Это сильно облегчает учёбу и даёт фору перед однокурсниками.\n• Понимание инфраструктуры и деплоя. Ребёнок узнает, как код превращается в работающий сервис: от загрузки на сервер до поддержки и обновлений. Это то, что отличает «кодера» от «инженера».\n\nЭтот модуль помогает ребёнку не просто «поучиться программированию», а сделать уверенный шаг к серьёзной карьере в IT.",
+    keyboard: createProgrammingEngineerKeyboard(),
+  });
+}
+
+export async function handleProgrammingEngineerMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setProgrammingEngineerState(env, vkId, { flow: "programming_engineer_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Инженер-разработчик\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleProgrammingEngineerMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getProgrammingEngineerState(env, vkId);
+  if (!state || state.flow !== "programming_engineer_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearProgrammingEngineerState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `ВОПРОС ПО КУРСУ - 🏗️ Инженер-разработчик\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createProgrammingEngineerKeyboard(),
+  });
+
+  return true;
 }
 
 export async function handleCourseLiteracy(env, peerId) {
