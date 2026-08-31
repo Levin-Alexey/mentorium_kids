@@ -1,6 +1,6 @@
 import { sendMainMenu } from "./mainMenu.js";
 import { handleTrialLesson } from "./trialLesson.js";
-import { handleCourses, handleCourseAi, handleCourseProgramming, handleCourseLiteracy, handleAiResearcher, handleAiCreator, handleAiDeveloper, handleAiEngineer, handleAiResearcherMoreInfo } from "./courses.js";
+import { handleCourses, handleCourseAi, handleCourseProgramming, handleCourseLiteracy, handleAiResearcher, handleAiCreator, handleAiDeveloper, handleAiEngineer, handleAiResearcherMoreInfo, handleAiCreatorMoreInfo, handleAiDeveloperMoreInfo, handleAiEngineerMoreInfo } from "./courses.js";
 import { handlePickCourse } from "./pickCourse.js";
 import { handleProjects } from "./projects.js";
 import { handlePricing } from "./pricing.js";
@@ -19,8 +19,11 @@ const ACTION_HANDLERS = {
   ai_researcher: handleAiResearcher,
   ai_researcher_more_info: handleAiResearcherMoreInfo,
   ai_creator: handleAiCreator,
+  ai_creator_more_info: handleAiCreatorMoreInfo,
   ai_developer: handleAiDeveloper,
+  ai_developer_more_info: handleAiDeveloperMoreInfo,
   ai_engineer: handleAiEngineer,
+  ai_engineer_more_info: handleAiEngineerMoreInfo,
   pick_course: handlePickCourse,
   projects: handleProjects,
   pricing: handlePricing,

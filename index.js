@@ -9,7 +9,7 @@ import { answerMessageEvent } from "./handlers/vkApi.js";
 import { handleTrialLesson, handleTrialTextInput } from "./handlers/trialLesson.js";
 import { handleQuestionTextInput } from "./handlers/question.js";
 import { handlePickCourseTextInput } from "./handlers/pickCourse.js";
-import { handleAiResearcherMoreInfoTextInput } from "./handlers/courses.js";
+import { handleAiResearcherMoreInfoTextInput, handleAiCreatorMoreInfoTextInput, handleAiDeveloperMoreInfoTextInput, handleAiEngineerMoreInfoTextInput } from "./handlers/courses.js";
 
 function getIsoTimestamp(date = new Date()) {
   return date.toISOString();
@@ -97,6 +97,21 @@ export default {
 
         const hasActiveAiResearcherMoreInfoFlow = await handleAiResearcherMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
         if (hasActiveAiResearcherMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveAiCreatorMoreInfoFlow = await handleAiCreatorMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveAiCreatorMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveAiDeveloperMoreInfoFlow = await handleAiDeveloperMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveAiDeveloperMoreInfoFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActiveAiEngineerMoreInfoFlow = await handleAiEngineerMoreInfoTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActiveAiEngineerMoreInfoFlow) {
           return new Response("ok", { status: 200 });
         }
       }

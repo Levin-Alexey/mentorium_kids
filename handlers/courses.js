@@ -163,6 +163,99 @@ async function clearAiResearcherState(env, vkId) {
   await env.KV.delete(`ai_researcher_info:${vkId}`);
 }
 
+async function setAiCreatorState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`ai_creator_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getAiCreatorState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`ai_creator_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearAiCreatorState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`ai_creator_info:${vkId}`);
+}
+
+async function setAiDeveloperState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`ai_developer_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getAiDeveloperState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`ai_developer_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearAiDeveloperState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`ai_developer_info:${vkId}`);
+}
+
+async function setAiEngineerState(env, vkId, state) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.put(`ai_engineer_info:${vkId}`, JSON.stringify(state));
+}
+
+async function getAiEngineerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return null;
+  }
+
+  const raw = await env.KV.get(`ai_engineer_info:${vkId}`);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function clearAiEngineerState(env, vkId) {
+  if (!env.KV || !vkId) {
+    return;
+  }
+  await env.KV.delete(`ai_engineer_info:${vkId}`);
+}
+
 function createAiResearcherKeyboard() {
   return {
     inline: true,
@@ -173,6 +266,111 @@ function createAiResearcherKeyboard() {
             type: "callback",
             label: "📩 Узнать подробнее",
             payload: JSON.stringify({ action: "ai_researcher_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_ai" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
+function createAiCreatorKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "ai_creator_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_ai" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
+function createAiDeveloperKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "ai_developer_more_info" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "⬅️ Назад",
+            payload: JSON.stringify({ action: "course_ai" }),
+          },
+        },
+      ],
+      [
+        {
+          action: {
+            type: "callback",
+            label: "🏠 Главное меню",
+            payload: JSON.stringify({ action: "main_menu" }),
+          },
+        },
+      ],
+    ],
+  };
+}
+
+function createAiEngineerKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [
+        {
+          action: {
+            type: "callback",
+            label: "📩 Узнать подробнее",
+            payload: JSON.stringify({ action: "ai_engineer_more_info" }),
           },
         },
       ],
@@ -236,27 +434,104 @@ export async function handleAiResearcher(env, peerId) {
 }
 
 export async function handleAiCreator(env, peerId) {
-  // TODO: Replace with actual AI Creator level content
   return sendMessage(env, peerId, {
-    text: "🎨 Создатель ИИ\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "В модуле \"Создатель ИИ\" ребёнок сразу делает реальные проекты, которые можно показать, сохранить в портфолио и по-настоящему гордиться.\n\nЧто войдёт в практику:\n\n• Освоение ИИ-инструментов как профессиональных помощников. Ребёнок научится системно работать с нейросетями: подбирать инструменты под задачу, выстраивать процесс и получать стабильный результат.\n• Создание сложных творческих работ. От первого наброска идеи до финального цифрового продукта: ребёнок пройдёт все этапы — концепцию, черновики, правки и сборку.\n• Умное применение ИИ в учёбе. Ребёнок поймёт, как использовать нейросети для исследований и подготовки проектов, не теряя самостоятельности и не прибегая к списыванию.\n• Первые цифровые продукты с элементами разработки. Ребёнок соберёт простые сайты, мини‑игры и интерактивные проекты, одновременно разбираясь в основах кода и логике программ.\n\nВ итоге у ребёнка будет несколько готовых работ: это и тренировка навыков, и отличный повод для гордости, и первые шаги к осознанному выбору цифрового направления.",
+    keyboard: createAiCreatorKeyboard(),
   });
 }
 
 export async function handleAiDeveloper(env, peerId) {
-  // TODO: Replace with actual AI Developer level content
   return sendMessage(env, peerId, {
-    text: "⚙️ Разработчик ИИ\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "⚙️ В модуле \"Разработчик ИИ\" ребёнок делает не учебные примеры, а настоящие цифровые продукты, которые можно показать, сохранить в портфолио и по‑настоящему гордиться. Это уровень, где код и ИИ работают вместе, чтобы решать реальные задачи.\n\nЧто войдёт в практику и портфолио:\n\n• Системное понимание LLM и AI‑workflow. Ребёнок научится видеть за красивым интерфейсом нейросети её логику и процессы - это даёт уверенность и снимает страх перед сложными технологиями.\n• Рабочее веб‑приложение от идеи до запуска. Он пройдёт полный путь: постановка задачи, проектирование, написание кода с поддержкой ИИ, тестирование и публикация.\n• Собственные AI‑сервисы на Python. Ребёнок подключит LLM через API и создаст свои первые сервисы - например, помощника для учёбы, генератора контента или чат‑бота.\n• Практические проекты с машинным обучением. На простых примерах он попробует обучать модели и научится отличать обучение с нуля от работы с готовой нейросетью - это база для более глубокой работы с данными.\n• Агентные системы: помощники, которые умеют действовать. Ребёнок соберёт помощника, который не просто отвечает, а ищет информацию, сохраняет контекст и выполняет последовательные шаги для решения задачи.\n\nВ итоге у ребёнка будет не просто набор знаний, а готовые проекты и понимание, как создавать цифровые продукты на стыке кода и ИИ.",
+    keyboard: createAiDeveloperKeyboard(),
   });
 }
 
 export async function handleAiEngineer(env, peerId) {
-  // TODO: Replace with actual AI Engineer level content
   return sendMessage(env, peerId, {
-    text: "🔧 Инженер по ИИ\n\n(Подробная программа уровня будет добавлена позже)",
-    keyboard: createBackKeyboard(),
+    text: "🔧 В модуле \"Инженер по ИИ\" ребёнок делает не учебные задачи, а полноценные инженерные проекты, которые можно показать, сохранить в портфолио и по‑настоящему гордиться. Это уровень, где каждый шаг приближает к профессии: от архитектуры до презентации готового MVP.\n\nЧто войдёт в практику и портфолио:\n\n• Инженерный подход к разработке с ИИ. Ребёнок научится проектировать системы так, чтобы они были надёжными, понятными и управляемыми — это отличает инженера от обычного пользователя.\n• Профессиональная база для LLM‑приложений на Python. Он соберёт свой набор инструментов и шаблонов, чтобы уверенно создавать приложения, где ИИ решает конкретные задачи.\n• Работа с реальными данными и алгоритмами. На живых примерах ребёнок освоит ML‑пайплайн и поймёт, как данные превращаются в работающие решения — это база для любой карьеры в технологиях.\n• AI‑базы знаний по собственным документам. Он сделает систему, которая отвечает на вопросы по его материалам: это и полезный инструмент для учёбы, и отличный проект для портфолио.\n• Надёжные агентные системы с контролем и памятью. Ребёнок спроектирует помощника, который умеет не только отвечать, но и действовать: использовать инструменты, запоминать контекст и выполнять цепочки задач без ошибок.\n• Полный цикл создания AI‑продукта. От проблемы и плана до MVP и презентации: ребёнок научится упаковывать идею в готовый продукт и рассказывать о нём так, чтобы его поняли.\n\nВ итоге у ребёнка будет не просто список навыков, а реальные проекты, показывающие, что он умеет мыслить и работать как инженер.",
+    keyboard: createAiEngineerKeyboard(),
   });
+}
+
+export async function handleAiDeveloperMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setAiDeveloperState(env, vkId, { flow: "ai_developer_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Разработчик ИИ\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleAiDeveloperMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getAiDeveloperState(env, vkId);
+  if (!state || state.flow !== "ai_developer_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearAiDeveloperState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `❓ ВОПРОС ПО КУРСУ - ⚙️ Разработчик ИИ\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createAiDeveloperKeyboard(),
+  });
+
+  return true;
+}
+
+export async function handleAiEngineerMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setAiEngineerState(env, vkId, { flow: "ai_engineer_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Инженер по ИИ\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleAiEngineerMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getAiEngineerState(env, vkId);
+  if (!state || state.flow !== "ai_engineer_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearAiEngineerState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `❓ ВОПРОС ПО КУРСУ - 🔧 Инженер по ИИ\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createAiEngineerKeyboard(),
+  });
+
+  return true;
 }
 
 export async function handleAiResearcherMoreInfo(env, peerId, payload = {}) {
@@ -294,6 +569,46 @@ export async function handleAiResearcherMoreInfoTextInput(env, peerId, text, vkI
   await sendMessage(env, peerId, {
     text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
     keyboard: createAiResearcherKeyboard(),
+  });
+
+  return true;
+}
+
+export async function handleAiCreatorMoreInfo(env, peerId, payload = {}) {
+  const vkId = payload.userId ?? peerId;
+
+  await setAiCreatorState(env, vkId, { flow: "ai_creator_info", step: "awaiting_info" });
+
+  return sendMessage(env, peerId, {
+    text: "Напишите Ваш вопрос по курсу \"Создатель ИИ\" в ответном сообщении, и мы свяжемся с Вами в ближайшее время.",
+  });
+}
+
+export async function handleAiCreatorMoreInfoTextInput(env, peerId, text, vkId) {
+  if (!text || !vkId) {
+    return false;
+  }
+
+  const state = await getAiCreatorState(env, vkId);
+  if (!state || state.flow !== "ai_creator_info" || state.step !== "awaiting_info") {
+    return false;
+  }
+
+  const normalizedText = String(text).trim();
+  if (!normalizedText) {
+    return false;
+  }
+
+  await clearAiCreatorState(env, vkId);
+
+  await sendAdminChatMessage(
+    env,
+    `❓ ВОПРОС ПО КУРСУ - 🎨 Создатель ИИ\n\n🔵 VK ID: ${vkId}\n\n💬 Вопрос:\n${normalizedText}`
+  );
+
+  await sendMessage(env, peerId, {
+    text: "Спасибо! Мы получили Ваш вопрос и свяжемся с Вами в ближайшее время.",
+    keyboard: createAiCreatorKeyboard(),
   });
 
   return true;
