@@ -23,6 +23,15 @@ function buildQuestionKeyboard(buttons) {
   };
 }
 
+function createMainMenuKeyboard() {
+  return {
+    inline: true,
+    buttons: [
+      [{ action: { type: "callback", label: "🏠 Главное меню", payload: JSON.stringify({ action: "main_menu" }) } }],
+    ],
+  };
+}
+
 async function getUserIdByVkId(env, vkId) {
   if (!env.DB || !vkId) {
     return null;
@@ -359,8 +368,7 @@ async function finalizeLead(env, peerId, vkId) {
   }
 
   return sendMessage(env, peerId, {
-    text: "Спасибо, что доверили нам знакомство ребёнка с миром ИИ и программирования.\n\nСовсем скоро наш куратор свяжется с вами, чтобы подтвердить время пробного урока и ответить на любые вопросы.\n\nДо встречи на занятии - уверены, ребёнку понравится! 🚀",
-  });
+    text: "Спасибо, что доверили нам знакомство ребёнка с миром ИИ и программирования.\n\nСовсем скоро наш куратор свяжется с вами, чтобы подтвердить время пробного урока и ответить на любые вопросы.\n\nДо встречи на занятии - уверены, ребёнку понравится! 🚀",    keyboard: createMainMenuKeyboard(),  });
 }
 
 async function sendLeadToVkChat(env, lead, accessToken = getFirstDefinedValue(env, "VK_GROUP_TOKEN", "VK_ACCESS_TOKEN"), peerId = getFirstDefinedValue(env, "VK_ADMIN_CHAT_ID", "VK_GROUP_CHAT_ID", "VK_CHAT_ID") || "175946972") {

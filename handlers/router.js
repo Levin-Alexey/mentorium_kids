@@ -1,6 +1,6 @@
 import { sendMainMenu } from "./mainMenu.js";
 import { handleTrialLesson } from "./trialLesson.js";
-import { handleCourses } from "./courses.js";
+import { handleCourses, handleCourseAi, handleCourseProgramming, handleCourseLiteracy } from "./courses.js";
 import { handlePickCourse } from "./pickCourse.js";
 import { handleProjects } from "./projects.js";
 import { handlePricing } from "./pricing.js";
@@ -13,6 +13,9 @@ const ACTION_HANDLERS = {
   trial_review_confirm: handleTrialLesson,
   trial_review_edit: handleTrialLesson,
   courses: handleCourses,
+  course_ai: handleCourseAi,
+  course_programming: handleCourseProgramming,
+  course_literacy: handleCourseLiteracy,
   pick_course: handlePickCourse,
   projects: handleProjects,
   pricing: handlePricing,
