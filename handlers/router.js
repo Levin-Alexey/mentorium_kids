@@ -3,7 +3,7 @@ import { handleTrialLesson } from "./trialLesson.js";
 import { handleCourses, handleCourseAi, handleCourseProgramming, handleCourseLiteracy, handleAiResearcher, handleAiCreator, handleAiDeveloper, handleAiEngineer, handleAiResearcherMoreInfo, handleAiCreatorMoreInfo, handleAiDeveloperMoreInfo, handleAiEngineerMoreInfo, handleProgrammingBasic, handleProgrammingBasicMoreInfo, handleProgrammingBeginner, handleProgrammingBeginnerMoreInfo, handleProgrammingDeveloper, handleProgrammingDeveloperMoreInfo, handleProgrammingEngineer, handleProgrammingEngineerMoreInfo } from "./courses.js";
 import { handlePickCourse } from "./pickCourse.js";
 import { handleProjects } from "./projects.js";
-import { handlePricing } from "./pricing.js";
+import { handlePricing, handlePricingConsultation } from "./pricing.js";
 import { handleQuestion } from "./question.js";
 
 const ACTION_HANDLERS = {
@@ -35,6 +35,7 @@ const ACTION_HANDLERS = {
   pick_course: handlePickCourse,
   projects: handleProjects,
   pricing: handlePricing,
+  pricing_consultation: handlePricingConsultation,
   question: handleQuestion,
   main_menu: (env, peerId) => sendMainMenu(env, peerId),
 };

@@ -9,6 +9,7 @@ import { answerMessageEvent } from "./handlers/vkApi.js";
 import { handleTrialLesson, handleTrialTextInput } from "./handlers/trialLesson.js";
 import { handleQuestionTextInput } from "./handlers/question.js";
 import { handlePickCourseTextInput } from "./handlers/pickCourse.js";
+import { handlePricingConsultationTextInput } from "./handlers/pricing.js";
 import { handleAiResearcherMoreInfoTextInput, handleAiCreatorMoreInfoTextInput, handleAiDeveloperMoreInfoTextInput, handleAiEngineerMoreInfoTextInput, handleProgrammingBasicMoreInfoTextInput, handleProgrammingBeginnerMoreInfoTextInput, handleProgrammingDeveloperMoreInfoTextInput, handleProgrammingEngineerMoreInfoTextInput } from "./handlers/courses.js";
 
 function getIsoTimestamp(date = new Date()) {
@@ -92,6 +93,11 @@ export default {
 
         const hasActivePickCourseFlow = await handlePickCourseTextInput(env, message.peer_id, message.text, vkUserId);
         if (hasActivePickCourseFlow) {
+          return new Response("ok", { status: 200 });
+        }
+
+        const hasActivePricingConsultationFlow = await handlePricingConsultationTextInput(env, message.peer_id, message.text, vkUserId);
+        if (hasActivePricingConsultationFlow) {
           return new Response("ok", { status: 200 });
         }
 
